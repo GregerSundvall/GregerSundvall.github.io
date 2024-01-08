@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik+Glitch|Share+Tech+Mono">
+	<title>PORTFOLIO Greger Sundvall</title>
+</head>
+
+<body>
+
+	<nav class="navbar" id="navbar">
+		<!-- LOGO -->
+		<div class="logo">PORTFOLIO<br>
+			<p style="font-size: x-large">Greger Sundvall</p>
+		</div>
+
+		<!-- NAVIGATION MENU -->
+		<ul class="nav-links">
+
+			<!-- USING CHECKBOX HACK -->
+			<input type="checkbox" id="checkbox_toggle" />
+			<label for="checkbox_toggle" class="hamburger">&#9776;</label>
+
+			<!-- NAVIGATION MENUS -->
+			<div class="menu">
+
+				<li><a href="index.html">About</a></li>
+
+				<li class="projects">
+					<a href="projects.html">My work</a>
+
+					<!-- DROPDOWN MENU -->
+<!--					<ul class="dropdown">-->
+<!--						<li><a href="/">Dropdown 1 </a></li>-->
+<!--						<li><a href="/">Dropdown 2</a></li>-->
+<!--						<li><a href="/">Dropdown 2</a></li>-->
+<!--						<li><a href="/">Dropdown 3</a></li>-->
+<!--						<li><a href="/">Dropdown 4</a></li>-->
+<!--					</ul>-->
+
+				</li>
+
+<!--				<li><a href="/">Pricing</a></li>-->
+				<li><a href="/">Contact</a></li>
+			</div>
+		</ul>
+	</nav>
+
+	<div class="pageContent">
+		<div class="pTitle">Rally Clash</div>
+		<br>
+		<br>
+		<p>		
+			<br>	Mobile rally/racing app
+			<br>	Unity/C#
+			<br>	Internship work
+			<br>	Team size 6-12 people
+			<br>	Programmers 3-6
+			
+			<br>
+			<br>
+			<br>
+			GENERAL TAKEAWAYS
+			<br>			
+			<br>			
+			Working on Rally Clash taught me so much about actually working as a developer. 
+			While I did learn new ways of using Unity/C#, and got to create a bunch of interesting stuff, my biggest
+			takeaway probably wasn't about the actual code or syntax,
+			but more about working on a larger and more complex codebase, with more people involved.
+			<br>
+			<br>
+			When tasked to add or modify something in the game I had to research existing code to an extent I had never needed in
+			the smaller projects I worked on before. The phrase "The code is the documentation" became very evident.
+			<br>
+			<br>
+			With lots of classes being way larger than what I've worked on before, and code being spread out over hundreds of files,
+			I soon found myself using the IDE and navigating files and classes in a different way than before. Less focused on browsing script
+			folders and scrolling in files, I relied more on search functions and other helpful tools in the IDE.
+			<br>
+			<br>
+			I used the debugger more than I have in the past. It is far from always the best option when troubleshooting 
+			something but when you really need it, having had more experience using it is obviously a good thing.
+			<br>
+			<br>
+			I learned a lot about good practice in git and commits, and the importance of it. One seemingly obvious example
+			being how for example a commit message "Fixed error in calculation" might seem ok in a branch called "Not getting
+			correct amount of points for X". But when this branch has been merged into another branch the message is not very telling
+			anymore, without looking into what file and code was changed.
+			<br>
+			Just as with coding itself, using git a lot for half a year means occasionally running into problems, 
+			which in turn means a chance to figure out how to fix them. Good practice.
+			<br>
+			<br>
+			Tracking bugs in Crashlytics meant a different level of troubleshooting than the bugs i see on my
+			own computer, since these crashes usually has happened in a different environment, under specific circumstances. 
+			<br>
+			<br>
+			Using TeamCity and Appcenter I got to see a bit of what CI/CD means.
+			<br>
+			<br>
+			Adding/modifying/fixing lots of small things in the game gave me lots of great practice in general Unity/C#/game 
+			development. 
+			<br>
+			The specific coding areas with most improvement were probably different kinds of async code, not just coroutines. I feel 
+			a lot more confident with these today than before.
+		</p>
+		
+		<br>
+		<br>
+		<br>
+		
+		<p>
+			CAR ENGINE SOUND EFFECTS
+			<br>
+			<br>
+			I was tasked to make use of a collection of actual rally car audio samples as the audio effects for the
+			cars in the game. There was a working effect in place, but it was a bit lacking in realism and "energy".
+			<br>I used Audacity to get the specific parts I wanted to use like fast and slow acceleration, starting the engine, 
+			idling, letting off the accelerator and let the engine wind down, etc.
+			The current system was mostly just pitching a short clip up and down depending on the car's speed, so I 
+			could not use that.
+			<br> The game does not have accelerator or brake input, so the only way of slowing down is turning and,
+			when turning hard enough, drifting. This meant the sound effect system had to rely solely on the car's 
+			current values.
+			<br> I also made the same effect clips but from a couple other car models, and prepared them all 
+			as scriptable object sets for the designer to test and tweak.
+			<br> There were discussions on whether to use this system or not, mainly since they would need to pay to use the 
+			audio samples in the game. I'm actually not sure myself if it's the right way to go either, because although
+			I like what I did, I'm not sure these realistic type sound effects really fit the rest of the game. But 
+			just for my own ego's sake, I hope it gets added during this winter even though I've left.
+			
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			LEVEL INTRO CAMERA PAN
+			<br>
+			<br>
+			The designer wanted a few nice views of the track before the start of each race. He wasn't sure about whether
+			they should be panning somehow or just be static. I wanted to make it in a way so that a non-coder could 
+			set the pan/static option and also the angle and paths easily.
+			<br>In short, it ended up as a list of camera positions/angles, a checkbox for panning, and a 
+			duration that are set in Unity. After loading the track, the game then either shows all the angles in the 
+			list, or pans between them. Then it cuts to the starting grid view, which was there all along.
+			<br>
+			<br> Probably the hardest part for me in the task was actually to break up the sequence of things happening
+			automatically from the moment the user presses play until the countdown hits zero and the race starts.
+			This sequence was also different depending on e.g. if a normal or a tutorial track was loading.
+			Maybe it was just me being new to this size project, maybe the architecture was not quite optimal, maybe it's always
+			like this, but I guess it was some combination. 
+			<br> In the end, I got all the callback events and whatnot sorted out and managed to squeeze the track demo 
+			parts in there. During the process I could also do it in a way to get rid of a loading screen which was nice.
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			MULTIPLAYER
+			<br>
+			<br>
+			During a couple weeks when most other employees were on summer vacation I could do pretty much whatever I 
+			wanted. Since I felt this game would be awesome to play against a few friends sitting in the same room, 
+			sort of like Mario kart but everyone on their phone instead of split-screen, I started looking into adding
+			Unity's own "Netcode for GameObjects" to the project. 
+			<br>Netcode was real handy to work with, and not very different from Alteruna which I had tried earlier. 
+			I did get a player car in a scene replicated in another instance of the game etc but I could not sync up 
+			and get a race going because of the same reasons I later had to deal with when doing the race intro camera
+			stuff. My "free time" was over before I could get this sorted out, and I didn't get any more time working
+			on it, but I'm glad I got some more practice in network code since it really is quite different.
+			<br>
+			<br>
+		</p>
+	</div>
+</body>
+
+</html>
