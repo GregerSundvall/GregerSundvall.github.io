@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #333333;
+    background-color: #222222;
 }
 
 body {
@@ -16,6 +16,26 @@ a {
 
 li {
     list-style: none;
+}
+
+code{
+    font-family: "Cascadia Mono", monospace;
+    font-size: small;
+    color: #ff4b91;
+}
+
+/*p{*/
+/*    border-left: #11ffcc;*/
+/*    border-top: #222222;*/
+/*    border-right: #222222;*/
+/*    border-bottom: #222222;*/
+/*    border-style: solid;*/
+/*    border-width: medium;*/
+/*}*/
+
+.link{
+    color: #04AA6D;
+    text-decoration-line: underline;
 }
 
 .dude{
@@ -42,7 +62,7 @@ li {
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    background-color: #333333;
+    background-color: #222222;
     color: #11ffcc;
 }
 
@@ -64,7 +84,7 @@ li {
 }
 
 .menu li:hover {
-    background-color: #333333;
+    background-color: #222222;
     /*border-radius: 0px;*/
     /*transition: 0.3s ease;*/
     /*border-style: solid;*/
@@ -76,7 +96,7 @@ li {
     padding: 5px 14px;
     border-style: solid;
     border-width: thin;
-    border-color: #333333;
+    border-color: #222222;
 }
 
 /* DROPDOWN MENU */
@@ -85,7 +105,7 @@ li {
 }
 
 .dropdown {
-    background-color: #333333;
+    background-color: #222222;
     padding: 1em 0;
     position: absolute; /*WITH RESPECT TO PARENT*/
     display: none;
@@ -107,7 +127,7 @@ li {
 }
 
 .dropdown li:hover {
-    background-color: #333333;
+    background-color: #222222;
 }
 
 .projects:hover .dropdown {
@@ -134,7 +154,7 @@ input[type=checkbox] {
     .menu {
         display:none;
         position: absolute;
-        background-color: #333333;
+        background-color: #222222;
         right: 0;
         left: 0;
         text-align: center;

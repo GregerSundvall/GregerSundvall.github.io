@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik+Glitch|Share+Tech+Mono">
+	<title>PORTFOLIO Greger Sundvall</title>
+</head>
+
+<body>
+
+	<nav class="navbar" id="navbar">
+		<!-- LOGO -->
+		<div class="logo">PORTFOLIO<br>
+			<p style="font-size: x-large">Greger Sundvall</p>
+		</div>
+
+		<!-- NAVIGATION MENU -->
+		<ul class="nav-links">
+
+			<!-- USING CHECKBOX HACK -->
+			<input type="checkbox" id="checkbox_toggle" />
+			<label for="checkbox_toggle" class="hamburger">&#9776;</label>
+
+			<!-- NAVIGATION MENUS -->
+			<div class="menu">
+
+				<li><a href="index.html">About</a></li>
+
+				<li class="projects">
+					<!--					<a href="turborilla.html">My Work</a>-->
+
+					My Work
+					<ul class="dropdown">
+						<li><a href="swiper.html">Tiles Game </a></li>
+						<li><a href="turborilla.html">Rally clash</a></li>
+						<li><a href="gravitum.html">Gravitum</a></li>
+						<li><a href="lastPeak.html">Last Peak</a></li>
+					</ul>
+
+				</li>
+
+				<li><a href="contact.html">Contact</a></li>
+			</div>
+		</ul>
+	</nav>
+
+	<div class="pageContent">
+		<div class="pTitle">Last Peak</div>
+		
+		<br>
+		<br>
+		
+		<p>
+			<br>	Environment: Unreal/C++
+			<br>	Futuregames school project
+			<br>	Team size: 10
+			<br>	Programmers: 3
+			<br>	<a href="https://github.com/M1m1c/GP3Team9/tree/main/Source/GP3Team9/Enemy" class="link"> Link to these files on GitHub</a>
+		</p>	
+		
+		<br>
+		<br>
+		<br>
+		
+		<p>
+			A game set in a future where the earth has been flooded by water. Using your ship you fight off enemies
+			while collecting enough crew and upgrades to conquer  the only remaining landmass, the peak of Mount Everest.
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			The part I worked on the most, and also enjoyed the most in this project was probably the enemy ship AI.
+			Requirements:
+			Patrol a certain area until spotting the player.
+			Don't run into land.
+			If player gets within a certain range chase it down.
+			When in gun range, start shooting at player with front cannon.
+			Also when in gun range, line up ship to get the player in range of side guns.
+			If player gets out of range, chase it to get back in range.
+			If enemy loses sight of player, go to where it was last seen.
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			The AI has a state machine with four states; patrolling, chasing, checking last known location, and attacking.
+			At the start of the game it moves forward at the lowest speed, avoiding obstacles in front of it. If it gets
+			too far from it's starting location it will turn around.
+			The AI has a reference to the player game object from the get go. If player gets within a specified distance,
+			and there is a clear line of sight it will chase the player at full speed until it gets within firing range.
+			Once there, it will start firing the front cannon. It will also start turning the ship so either of the sides
+			face the player, since the side guns have a limited horizontal angle range.
+			As long as the player is within sight it's location is saved. So should the player hide behind a mass of
+			land, enemy will go to the last known location and hopefully spot the player from there. If not, it will
+			just start patrolling the area.
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			Short clips showing a bit about the different cannons's angle ranges and AI turning the boat to get player
+			into range. Red/green shows if player is in range of front cannon. Magenta/cyan is side cannon.
+			<br>
+			<img src="LastPeakClip.gif" height="240" width="426" alt="Cannon angles clip"/>
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			The ship scans forward for land that might be blocking the path. In case something is there it will start
+			scanning incrementally to both sides to find a clear path.
+			<br>
+			<img src="LastPeakCode1.png" height="684" width="917" alt="Find clear Path Code"/>
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			The front cannon can fire in any angle except a small range to the rear, as not to shoot at itself. AI will
+			check this and fire if possible.
+			<br>
+			<img src="LastPeakCode2.png" height="438" width="813" alt="Front cannon code"/>
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			Unlike the front cannon, the side cannons can only fire in a quite narrow angle to the side. AI will check
+			this and turn the ship as needed.
+			<br>
+			<img src="LastPeakCode3.png" height="680" width="756" alt="Side cannon code"/>
+		</p>
+		
+		<br>
+		<br>
+		<br>
+		
+	</div>
+</body>
+
+</html>

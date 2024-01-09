@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik+Glitch|Share+Tech+Mono">
+	<title>PORTFOLIO Greger Sundvall</title>
+</head>
+
+<body>
+
+	<nav class="navbar" id="navbar">
+		<!-- LOGO -->
+		<div class="logo">PORTFOLIO<br>
+			<p style="font-size: x-large">Greger Sundvall</p>
+		</div>
+
+		<!-- NAVIGATION MENU -->
+		<ul class="nav-links">
+
+			<!-- USING CHECKBOX HACK -->
+			<input type="checkbox" id="checkbox_toggle" />
+			<label for="checkbox_toggle" class="hamburger">&#9776;</label>
+
+			<!-- NAVIGATION MENUS -->
+			<div class="menu">
+
+				<li><a href="index.html">About</a></li>
+
+				<li class="projects">
+					<!--					<a href="turborilla.html">My Work</a>-->
+
+					My Work
+					<ul class="dropdown">
+						<li><a href="swiper.html">Tiles Game </a></li>
+						<li><a href="turborilla.html">Rally clash</a></li>
+						<li><a href="gravitum.html">Gravitum</a></li>
+						<li><a href="lastPeak.html">Last Peak</a></li>
+					</ul>
+
+				</li>
+
+				<li><a href="contact.html">Contact</a></li>
+			</div>
+		</ul>
+	</nav>
+
+	<div class="pageContent">
+		<div class="pTitle">Swiper</div>
+		
+		<br>
+		<br>
+		
+		<p>
+			<br>	Environment: Unity/C#
+			<br>	Work sample
+			<br>	Team size: Me
+			<br>	Programmers: Me
+			<br>	<a href="https://github.com/GregerSundvall/Swiper/tree/main/Assets/Scripts" class="link"> Link to these files on GitHub</a>
+		</p>	
+		
+		<br>
+		<br>
+		<br>
+		
+		<p>
+			Re-arrange tiles to match a certain pattern.
+			Done as a work sample for a job application, the assignment was to make a simple puzzle game. I put in just 
+			over 40 hours on this, including lots of back-and-forth fiddling because I didn't have a clear vision of how 
+			it should work in the end.
+		</p>
+
+		<br>
+
+		<p>
+			My original plan was a game pretty much like the old game with 15 numbered tiles that you
+			arrange by number, or even more like "Rubik's race". It should give you a board of square tiles of different 
+			colors, and a target pattern. One tile is of course missing so you can actually move them around. 
+			<br>Just like in 
+			Rubik's race, there should be a frame of extra tiles around it, to use for transport. This makes the game
+			quicker and easier than the traditional game of 15. 
+			<br>There should be a timer and a best time feature.
+			<br>The game should be 3D, with perspective projection.
+			<br>The tiles should be freely movable. You can NOT just tap a tile to move it to a free slot.
+			<br>
+			<br>Things that came up during development: 
+			<br>Option of different board sizes (symmetric or not). 
+			<br>Make the outer "transport frame" an option.
+			<br>Having a max time to solve.
+			<br>Having a max number of moved tiles to solve.
+			<br>A level system with predefined levels, with a mix of these options. 
+			<br>The best time feature is still there, as long as you solve it within the set max time and moves.
+			
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			My first thought was to use physics. Overkill obviously, but I thought it might give the tiles a nice sliding
+			look. I skipped this since with the short distances the tiles move, it didn't really show anyway unless I
+			let them bounce which was just annoying.
+			<br> So I thought maybe I should just do a simple data model of positions and colors, and then display and
+			animate things from that. 
+			<br>I chose some sort of middle road with matrices of possible positions and target colors, but the tiles
+			in the scene and their colors are "the truth". And the game uses ray casting to determine if
+			a move is possible, and evaluate if the target pattern is matched.
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			I project the mouse (or touch) movement onto the objects in the scene to figure out what to (try to) move
+			and how much.
+			<pre>
+				<code>
+					
+var ray = gameCamera.ScreenPointToRay(Input.mousePosition);
+RaycastHit hit;
+
+if (Physics.Raycast(ray, out hit))
+{
+	GamePiece gamePiece = hit.collider.GetComponent&ltGamePiece&gt();
+	var isValidHit = hit.normal == Vector3.up && gamePiece == currentlyHeldGamePiece;
+	
+	if (isValidHit)
+	{
+		var sceneProjectedSwipe = hit.point - previousHitPoint;
+		var movement = Vector3.zero;
+			
+		if (Mathf.Abs(sceneProjectedSwipe.x) > Mathf.Abs(sceneProjectedSwipe.z))
+		{
+			movement.x = Mathf.Min(sceneProjectedSwipe.x, movementPerFrameLimit);
+		}
+		else
+		{
+			movement.z = Mathf.Min(sceneProjectedSwipe.z, movementPerFrameLimit);
+		}
+			
+		currentlyHeldGamePiece.TryToMove(movement);
+		
+		previousHitPoint = hit.point;
+	}
+}
+				</code>
+			</pre>
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			Determine if a move is possible. If there is another game piece in the way, it passes the
+			move request along to that one (and so on). If there is a piece at the end of the chain that has room to
+			move, they all move as requested. Recursively-ish.
+			<pre>
+				<code>
+					
+public bool TryToMove(Vector3 movement)
+{
+	RaycastHit hit;
+	if (!Physics.Raycast(transform.position, movement, out hit, raycastDistance))
+	{
+		transform.position += movement;
+		wasMoved = true;
+		return true;
+	}
+
+	GamePiece otherPiece = hit.collider.GetComponent&ltGamePiece&gt();
+	if (otherPiece != null)
+	{
+		var couldMove = otherPiece.TryToMove(movement);
+		if (couldMove)
+		{
+			transform.position += movement;
+			wasMoved = true;
+			return true;
+		}
+	}
+	return false;
+}
+				</code>
+			</pre>
+		</p>
+
+		<br>
+		<br>
+		<br>
+
+		<p>
+			Every time the user lets up the mouse button I do a check for win condition by doing a ray cast for every 
+			target pattern position, from just above tile height and down. If there is a tile I check it's color against
+			the target.
+			<pre>
+				<code>
+					
+var solved = true;
+int bufferEdge = currentLevelSettings.useBufferEdges ? 1 : 0;
+float maxRayDistance = 0.1f;
+var rayOriginOffset = new Vector3(0, maxRayDistance, 0);
+var rayDirection = Vector3.down;
+		
+for (int i = 0; i < targetPattern.Count; i++)
+{
+	for (int j = 0; j < targetPattern[i].Count; j++)
+	{
+		RaycastHit hit;
+		var piecePosition = possiblePositions[i + bufferEdge][j + bufferEdge];
+		var rayOrigin = piecePosition + rayOriginOffset;
+		if (Physics.Raycast(rayOrigin, rayDirection, out hit, maxRayDistance))
+		{
+			GamePiece gamePiece = hit.collider.GetComponent&ltGamePiece&gt();
+			var isValidHit = gamePiece != null;
+			if (isValidHit)
+			{
+				var brickColor = gamePiece.color;
+				var solutionColor = targetPattern[i][j];
+				if (brickColor != solutionColor)
+				{
+					solved = false;
+					break;
+				}
+			}
+			else
+			{
+				solved = false;
+				break;
+			}
+		}
+		else
+		{
+			solved = false;
+			break;
+		}
+	}
+			
+	if (!solved)
+	{
+		break;
+	}
+}
+				</code>
+			</pre>
+		</p>
+		
+		<br>
+		<br>
+		<br>
+		
+	</div>
+</body>
+
+</html>
