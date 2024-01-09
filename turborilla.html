@@ -127,11 +127,246 @@
 			<br> I also made the same effect clips but from a couple other car models, and prepared them all 
 			as scriptable object sets for the designer to test and tweak.
 			<br> There were discussions on whether to use this system or not, mainly since they would need to pay to use the 
-			audio samples in the game. I'm actually not sure myself if it's the right way to go either, because although
-			I like what I did, I'm not sure these realistic type sound effects really fit the rest of the game. But 
-			just for my own ego's sake, I hope it gets added during this winter even though I've left.
-			
+			audio samples in the game. Also, even though no-one else said it, 
+			I'm not sure these realistic type sound effects really fit the rest of the game. 
+			<br>Whatever happens, I'm glad I got to do it.
+			<br>
+			<br>
+			First off, from a designer's perspective, they just (create the audio clips and) create a "Car sound effect pack" scriptable object 
+			and drop the audio clips in there. They then drop this scriptable object on a car prefab and they're
+			off to the races!
+			<br>The audio level/volume is separately adjustable for each clip, and for the whole pack.
 		</p>
+		
+		<pre>
+			<code>
+[Serializable]
+public class CarSfx
+{
+	[SerializeField] public AudioClip audioClip;
+	[SerializeField] public float volume = 1;
+
+}
+
+
+[Serializable]
+[CreateAssetMenu(menuName = "Cars/Car sound effect pack")]
+public class CarSfxPackSO : ScriptableObject
+{
+	[SerializeField] public float mainVolume = 1;
+	[SerializeField] public CarSfx idle;
+	[SerializeField] public CarSfx first;
+	[SerializeField] public CarSfx second;
+	[SerializeField] public CarSfx third;
+	[SerializeField] public CarSfx ignitionAndIdle;
+	[SerializeField] public CarSfx preStartRevving;
+	[SerializeField] public CarSfx jump;
+	[SerializeField] public CarSfx drift;
+	[SerializeField] public CarSfx boost;
+	[SerializeField] public CarSfx landing;
+	
+	public CarSfx GetGear(int gear)
+	{
+		return gear switch
+		{
+			0 => idle,
+			1 => first,
+			2 => second,
+			3 => third,
+			_ => second
+		};
+	}
+}
+			</code>
+		</pre>
+		
+		<p>
+			When spawning a car, an audio source will be setup for each of these sound effects. I created a class to keep
+			track of these sound sources, and also have some helper methods tucked away.
+		</p>
+		
+		
+		<pre>
+			<code>
+public class CarAudioSourcePack
+{
+    public AudioSource Idle;
+    public AudioSource First;
+    public AudioSource Second;
+    public AudioSource Third;
+    public AudioSource IgnitionAndIdle;
+    public AudioSource CountdownAt2;
+    public AudioSource Jump;
+    public AudioSource Drift;
+    public AudioSource Boost;
+    public AudioSource Landing;
+    
+    private AudioSource currentlyPlaying;
+    
+    public AudioSource GetAudioSourceByGearNr(int gear)
+    {
+        return gear switch
+        {
+            0 => Idle,
+            1 => First,
+            2 => Second,
+            3 => Third,
+            _ => Second
+        };
+    }
+
+    public void StopAllEngineSounds()
+    {
+        Stop(Idle);
+        Stop(First);
+        Stop(Second);
+        Stop(Third);
+        Stop(IgnitionAndIdle);
+        Stop(CountdownAt2);
+        Stop(Jump);
+        Stop(Drift);
+        Stop(Boost);
+    }
+
+    public void Stop(AudioSource source)
+    {
+        source.volume = 0;
+        source.Stop();
+    }
+
+    public void StopCurrent()
+    {
+        Stop(currentlyPlaying);
+    }
+
+    public void Play(AudioSource source)
+    {
+        currentlyPlaying = source;
+        source.Play();
+    }
+
+    public void SwitchTo(AudioSource source)
+    {
+        StopCurrent();
+        Play(source);
+    }
+}
+			</code>
+		</pre>
+		
+		<p>
+			A number of conditions will then determine which clip (if any) should be playing, and start it if needed.
+			Following is an excerpt from the car audio manager update/tick function.
+		</p>
+		
+		<pre>
+			<code>
+// Volume stuff
+var applyPostRaceFadeOut = localPlayerHasFinished && postRaceAudioFadeOutTimer > 0;
+if (applyPostRaceFadeOut)
+{
+	postRaceAudioFadeOutTimer -= Time.deltaTime;
+	postRaceFadeOutScalar = Mathf.Max(0, postRaceAudioFadeOutTimer / postRaceAudioFadeOutDuration);
+}
+audioSettingsVolume = RC.PlayerProfile.audioSettings.masterVolume * RC.PlayerProfile.audioSettings.sfxVolume;
+mainVolume = audioSettingsVolume * localOrOtherPlayerScalar * postRaceFadeOutScalar;
+
+var isFirstTutorialTrack = preStartRevAudioSource == null;
+if (preStartRevFadeOutTimer < preStartRevFadeOutDuration && !isFirstTutorialTrack)
+{
+	preStartRevFadeOutTimer -= Time.deltaTime;
+	preStartRevAudioSource.volume = carSfxPack.preStartRevving.volume * carSfxPack.mainVolume * mainVolume * preStartRevFadeOutTimer / preStartRevFadeOutDuration;
+}
+
+// Set averaged speed factor
+if (averageSpeedTimer < 0 && speedSamples.Count > 0)
+{
+	float speedSum = 0;
+	foreach (var speedSample in speedSamples)
+	{
+		speedSum += speedSample;
+	}
+
+	averageSpeedFactor = speedSum / speedSamples.Count;
+	speedSamples.Clear();
+	averageSpeedTimer = averageSpeedSumDelay;
+}
+else
+{
+	speedSamples.Add(carController.speedFactor);
+	averageSpeedTimer -= Time.deltaTime;
+}
+
+// Set current gear
+currentGear = 0;
+if (averageSpeedFactor > 0.9f)
+{
+	currentGear = 3;
+}
+else if (averageSpeedFactor > 0.8f)
+{
+	currentGear = 2;
+}
+else if (averageSpeedFactor > 0.6f)
+{
+	currentGear = 1;
+}
+
+// Set grounded values
+if (carController.isGrounded)
+{
+	timeGrounded += Time.deltaTime;
+	timeNotGrounded = 0;
+}
+else
+{
+	timeNotGrounded += Time.deltaTime;
+	timeGrounded = 0;
+}
+
+// Play correct engine sound effect
+if (RC.PlayerIsBoosting)
+{
+	ref var boostAS = ref audioSources.Boost;
+	if (!boostAS.isPlaying)
+	{
+		audioSources.StopAllEngineSounds();
+		boostAS.Play();
+	}
+	boostAS.volume = carSfxPack.boost.volume * carSfxPack.mainVolume * mainVolume;
+}
+else if (carController.isLocalPlayer && carController.driftFactor > minDriftFactorValueForRunningSFX)
+{
+	ref var driftAS = ref audioSources.Drift;
+	if (!driftAS.isPlaying)
+	{
+		audioSources.StopAllEngineSounds();
+		driftAS.Play();
+	}
+	driftAS.volume = carSfxPack.drift.volume * carSfxPack.mainVolume * mainVolume;
+}
+else if (timeNotGrounded > minTimeNotGroundedForPlayingJumpSFX)
+{
+	ref var jumpAS = ref audioSources.Jump;
+	if (!jumpAS.isPlaying)
+	{
+		audioSources.StopAllEngineSounds();
+		jumpAS.Play();
+	}
+	jumpAS.volume = carSfxPack.jump.volume * carSfxPack.mainVolume * mainVolume;
+}
+else if (timeGrounded > minTimeGroundedForPlayingNormalEngineSFX)
+{
+	var currentGearAS = audioSources.GetAudioSourceByGearNr(currentGear);
+	if (!currentGearAS.isPlaying)
+	{
+		audioSources.StopAllEngineSounds();
+		currentGearAS.Play();
+	}
+	currentGearAS.volume = carSfxPack.GetGear(currentGear).volume * carSfxPack.mainVolume * mainVolume;
+}
+			</code>
+		</pre>
 
 		<br>
 		<br>
@@ -145,18 +380,79 @@
 			they should be panning somehow or just be static. I wanted to make it in a way so that a non-coder could 
 			set the pan/static option and also the angle and paths easily.
 			<br>In short, it ended up as a list of camera positions/angles, a checkbox for panning, and a 
-			duration that are set in Unity. After loading the track, the game then either shows all the angles in the 
-			list, or pans between them. Then it cuts to the starting grid view, which was there all along.
+			duration, that the designer can set in Unity. After loading the track, the game then either shows all the angles in the 
+			list, or pans between them according to the settings. It then cuts to the starting grid view, which was there
+			all along, but was slightly modified.
 			<br>
 			<br> Probably the hardest part for me in the task was actually to break up the sequence of things happening
 			automatically from the moment the user presses play until the countdown hits zero and the race starts.
 			This sequence was also different depending on e.g. if a normal or a tutorial track was loading.
 			Maybe it was just me being new to this size project, maybe the architecture was not quite optimal, maybe it's always
-			like this, but I guess it was some combination. 
+			like this. I'm guessing it's usually like this.
 			<br> In the end, I got all the callback events and whatnot sorted out and managed to squeeze the track demo 
 			parts in there. During the process I could also do it in a way to get rid of a loading screen which was nice.
+			<br>
+			<br>
+			<br>
+			Every angle (however many the designer added) gets added to lists of transforms and rotations. The time
+			value entered by the designer is either used for how long every static shot is, or how long every pan is,
+			depending on which of these alternatives were chosen. Code excerpts:
 		</p>
+		
+		<pre>
+			<code>
+foreach (var tf in trackSetup.introCameraAngles)
+{
+	positions.Add(tf.position);
+	rotations.Add(tf.rotation);
+}
 
+tfCount = positions.Count;
+timePerTF = lerpBetweenAngles? duration / (tfCount - 1) : duration / tfCount;
+			</code>	
+		</pre>
+		
+		<p>
+			In update/tick, the position and rotation is updated according to set options. In case of a static shot,
+			a slight sway is added.
+		</p>
+		
+		<pre>
+			<code>
+if (lerpBetweenAngles)
+{
+	float fraction = (timer % timePerTF) / timePerTF;
+	float easeInOut = fraction * fraction * (3.0f - (2.0f * fraction));
+	cameraTF.position = Vector3.Lerp(positions[currentTfIndex], positions[currentTfIndex + 1], easeInOut);
+	cameraTF.rotation = Quaternion.Slerp(rotations[currentTfIndex], rotations[currentTfIndex + 1], easeInOut);
+	if (timer > (currentTfIndex + 1) * timePerTF)
+	{
+		currentTfIndex++;
+	}
+}
+else if (timer > (currentTfIndex + 1) * timePerTF)
+{
+	currentTfIndex++;
+	cameraTF.position = positions[currentTfIndex];
+	cameraTF.rotation = rotations[currentTfIndex];
+}
+else
+{
+	
+	swayScalar += Random.Range(-0.1f, 0.1f);
+	swayScalar = Mathf.Clamp(swayScalar, -1, 1);
+
+	swayDirection.x += Random.Range(-0.1f, 0.1f);
+	swayDirection.y += Random.Range(-0.1f, 0.1f);
+	swayDirection.Normalize();
+
+	swayOffset = swayScalar * Time.deltaTime * swayDirection;
+
+	cameraTF.rotation = Quaternion.Euler(swayOffset += cameraTF.rotation.eulerAngles);
+}
+			</code>
+		</pre>
+		
 		<br>
 		<br>
 		<br>
