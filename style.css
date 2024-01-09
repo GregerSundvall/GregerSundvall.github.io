@@ -33,6 +33,14 @@ code{
 /*    border-width: medium;*/
 /*}*/
 
+
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /*width: 50%;*/
+}
+
 .link{
     color: #04AA6D;
     text-decoration-line: underline;
