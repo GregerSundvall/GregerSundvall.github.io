@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik+Glitch|Share+Tech+Mono">
+	<title>PORTFOLIO Greger Sundvall</title>
+</head>
+
+<body>
+
+	<nav class="navbar" id="navbar">
+		<!-- LOGO -->
+		<div class="logo">PORTFOLIO<br>
+			<p style="font-size: x-large">Greger Sundvall</p>
+		</div>
+
+		<!-- NAVIGATION MENU -->
+		<ul class="nav-links">
+
+			<!-- USING CHECKBOX HACK -->
+			<input type="checkbox" id="checkbox_toggle" />
+			<label for="checkbox_toggle" class="hamburger">&#9776;</label>
+
+			<!-- NAVIGATION MENUS -->
+			<div class="menu">
+
+				<li><a href="index.html">About</a></li>
+
+				<li class="projects">
+<!--					<a href="turborilla.html">My Work</a>-->
+
+					My Work
+					<ul class="dropdown">
+						<li><a href="swiper.html">Tiles Game </a></li>
+						<li><a href="turborilla.html">Rally clash</a></li>
+						<li><a href="gravitum.html">Gravitum</a></li>
+						<li><a href="lastPeak.html">Last Peak</a></li>
+						<li><a href="Engine.html">Game engine</a></li>
+					</ul>
+
+				</li>
+
+				<li><a href="contact.html">Contact</a></li>
+			</div>
+		</ul>
+	</nav>
+
+	<div class="pageContent">
+		<div class="pTitle">C++ game engine playground</div>
+		
+		<br>
+		<br>
+
+		<p>
+			<br>	Environment: C++, SDL2
+			<br>	<a href="https://github.com/GregerSundvall/GNgn" target="_blank" rel="noopener noreferrer" class="link"> Link to this project on GitHub</a>
+		</p>
+
+		<br>
+		<br>
+		<br>
+		
+		<p>
+			I started this project during a course in C++ efficiency, which already was an interest of mine. I wanted 
+			to use regular C or C++ (not Unreal) so I chose to use SDL
+			for input and output to quickly get going with the topic at hand. 
+			<br>
+			<br>
+			After the course was over I wanted to take it further so 
+			I created some sort of entity component system. When I later was gonna make a physics
+			system I did it in this same project, with the plan of hooking them up together. Well, I got the physics
+			going just in time for my internship, which meant I didn't have a lot of time to spare, so I left it in 
+			kind of a mess. 
+			<br>
+			<br>
+			All the while I also really wanted to drop SDL and handle the screen output in a more manual fashion, to
+			fully make use of the ECS. So instead of hooking everything up in here I have begun another project using 
+			glfw, so I can control how/when things are sent to the GPU better. I intend to use most of what's in here 
+			in one way or another, once I get to the point where it's needed. 
+			<br>
+			<br>
+			So, this is really nothing to show in terms of an end product, it never will be, it's likely 
+			quite naively done, and I guess some might say it just shows that I DON'T finish what I start.
+			But, I assure you, I DO finish projects and tasks of importance, and I figure showing this project might say
+			something in the way of interest, and maybe something about general structure etc..
+			<br>
+			<br>
+			So I invite you to click the link to the repo and have a look.
+		</p>
+	</div>
+</body>
+
+</html>
