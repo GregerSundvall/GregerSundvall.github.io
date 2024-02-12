@@ -54,9 +54,15 @@
 		
 		<br>
 		<br>
+			A work in progress.
+			Started out as a minimalistic testing ground for performance with lots of objects, and has since grown,
+			in different directions.
+			It's really not something I want to display in terms of a finished product, but maybe as a hint about
+			interest, dedication, and/or perseverance. 
+		<br>
 
 		<p>
-			<br>	Environment: C++, SDL2
+			<br>	Environment: C++, SDL2, Vulkan, glfw
 			<br>	<a href="https://github.com/GregerSundvall/GNgn" target="_blank" rel="noopener noreferrer" class="link"> Link to this project on GitHub</a>
 		</p>
 
@@ -65,31 +71,36 @@
 		<br>
 		
 		<p>
-			I started this project during a course in C++ efficiency, which already was an interest of mine. I wanted 
-			to use regular C or C++ (not Unreal) so I chose to use SDL
-			for input and output to quickly get going with the topic at hand. 
 			<br>
 			<br>
-			After the course was over I wanted to take it further so 
-			I created some sort of entity component system. When I later was gonna make a physics
-			system I did it in this same project, with the plan of hooking them up together. Well, I got the physics
-			going just in time for my internship, which meant I didn't have a lot of time to spare, so I left it in 
-			kind of a mess. 
+			January 2024
+			I decided to use OpenGL mainly because it's considered easier than Vulkan, at least to get started. And my 
+			thought was	I'll just make a minimal OpenGL environment to get started and build from there. After getting 
+			it running I started to think about what I needed to do to integrate it into my engine, and realized that 
+			would actually be quite a bit more. So instead of putting too much time into learning OpenGl I decided to 
+			switch to Vulkan. 
+			<br>I have started to study small Vulkan implementations and, in my use case, it really doesn't seem like 
+			that big of a difference. (Famous last words..?)
+			Really looking forward to integrating Vulkan!
 			<br>
 			<br>
-			All the while I also really wanted to drop SDL and handle the screen output in a more manual fashion, to
-			fully make use of the ECS. So instead of hooking everything up in here I have begun another project using 
-			glfw, so I can control how/when things are sent to the GPU better. I intend to use most of what's in here 
-			in one way or another, once I get to the point where it's needed. 
+			January 2023
+			I had been wanting to drop SDL and work closer to the GPU, so I started working on an implementation 
+			with OpenGL, and the help of glfw.
 			<br>
 			<br>
-			So, this is really nothing to show in terms of an end product, it never will be, it's likely 
-			quite naively done, and I guess some might say it just shows that I DON'T finish what I start.
-			But, I assure you, I DO finish projects and tasks of importance, and I figure showing this project might say
-			something in the way of interest, and maybe something about general structure etc..
+			April 2023
+			Added a physics system I created from different sources on the internet. I hadn't finished the integration 
+			when I started my internship, and chose to focus on Unity and C# from that point on, so this project was left 
+			in kind of a mess.
 			<br>
 			<br>
-			So, I humbly invite you to click the link to the repo and have a look.
+			December 2022
+			Created an entity system with optional components for collision, sprites, etc. 
+			<br>
+			<br>
+			November 2022
+			Did some testing with massive amounts of small moving objects on screen. Using SDL for the graphics. 
 		</p>
 	</div>
 </body>
